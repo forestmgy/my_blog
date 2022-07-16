@@ -2,6 +2,7 @@ package model
 
 import (
 	"encoding/base64"
+
 	"golang.org/x/crypto/scrypt"
 	"gorm.io/gorm"
 	"log"
@@ -15,8 +16,18 @@ type User struct {
 	Role     int    `gorm:"type:int;DEFAULT:2" json:"role" validate:"required,gte=2" label:"角色码"`
 }
 
-//查询用户是否存在--通过用户名来查
-func CheckUser(username string) int {
+//查询用户是否存在--通过用户id来查
+func CheckUser(userid int) int {
+	var users User
+	db.Select("id").Where("id= ?", userid).First(&users)
+	if users.ID > 0 {
+		return errmsg.ERROR_USERNAME_DUPLICATED
+	}
+	return errmsg.SUCCESS
+}
+
+//查询用户名是否被用过了
+func CheckUserName(username string) int {
 	var users User
 	db.Select("id").Where("username= ?", username).First(&users)
 	if users.ID > 0 {
@@ -28,7 +39,7 @@ func CheckUser(username string) int {
 //注册用户
 func CreateUser(data *User) int {
 	//data.Password = ScryptPassword(data.Password)
-	err := db.Create(&data)
+	err := db.Create(&data).Error
 	if err != nil {
 		return errmsg.ERROR
 	}
@@ -43,8 +54,34 @@ func GetUsers(pageSize, pageNum int) []User { //pageSize --每页最大数量  p
 }
 
 //编辑用户
+func EditUser(id int, data *User) int {
+	code := CheckUser(id)
+	if code == errmsg.SUCCESS {
+		return errmsg.ERROR_USER_NOT_EXIST
+	}
+	var maps = make(map[string]interface{})
+	maps["username"] = data.Username
+	maps["role"] = data.Role
+	err := db.Model(&User{}).Where("id = ?", id).Updates(maps).Error
+	if err != nil {
+		return errmsg.ERROR
+	}
+	return errmsg.SUCCESS
+}
 
 //删除用户
+func DeleteUser(id int) int {
+	code := CheckUser(id)
+	if code == errmsg.SUCCESS {
+		return errmsg.ERROR_USER_NOT_EXIST
+	}
+	var user User
+	err := db.Where("id = ?", id).Delete(&user).Error
+	if err != nil {
+		return errmsg.ERROR
+	}
+	return errmsg.SUCCESS
+}
 
 //使用Gorm的钩子函数进行加密
 func (u *User) BeforeSave(tx *gorm.DB) (err error) {
