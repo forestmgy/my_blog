@@ -27,7 +27,7 @@ func CheckUser(username string) int {
 
 //注册用户
 func CreateUser(data *User) int {
-	data.Password = ScryptPassword(data.Password)
+	//data.Password = ScryptPassword(data.Password)
 	err := db.Create(&data)
 	if err != nil {
 		return errmsg.ERROR
@@ -45,6 +45,12 @@ func GetUsers(pageSize, pageNum int) []User { //pageSize --每页最大数量  p
 //编辑用户
 
 //删除用户
+
+//使用Gorm的钩子函数进行加密
+func (u *User) BeforeSave(tx *gorm.DB) (err error) {
+	u.Password = ScryptPassword(u.Password)
+	return
+}
 
 //密码加密
 func ScryptPassword(password string) string {
