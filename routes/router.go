@@ -22,7 +22,10 @@ func InitRouter() {
 		routerv1.PUT("category/:id", v1.EditCategory)
 		routerv1.DELETE("category/:id", v1.DelCategory)
 		//Article模块的路由接口
-
+		routerv1.POST("article/add", v1.AddArt)
+		routerv1.GET("articles", v1.GetAllArt)
+		routerv1.PUT("article/:id", v1.EditArt)
+		routerv1.DELETE("article/:id", v1.DelArt)
 	}
 	r.Run(utils.HttpPort)
 }
