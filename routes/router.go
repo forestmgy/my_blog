@@ -22,10 +22,12 @@ func InitRouter() {
 		routerv1.PUT("category/:id", v1.EditCategory)
 		routerv1.DELETE("category/:id", v1.DelCategory)
 		//Article模块的路由接口
-		routerv1.POST("article/add", v1.AddArt)
-		routerv1.GET("articles", v1.GetAllArt)
-		routerv1.PUT("article/:id", v1.EditArt)
-		routerv1.DELETE("article/:id", v1.DelArt)
+		routerv1.POST("article/add", v1.AddArt)                      //添加文章
+		routerv1.GET("articles", v1.GetAllArt)                       //得到全部文章
+		routerv1.PUT("article/:id", v1.EditArt)                      //编辑文章
+		routerv1.DELETE("article/:id", v1.DelArt)                    //删除文章
+		routerv1.GET("article/:id", v1.GetArtInfo)                   //得到单个文章
+		routerv1.GET("article/catelist/:id", v1.GetArtilcesByCateId) //通过分类名ID得到文章列表
 	}
 	r.Run(utils.HttpPort)
 }

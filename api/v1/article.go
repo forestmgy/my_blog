@@ -21,11 +21,34 @@ func AddArt(c *gin.Context) {
 	})
 }
 
-// todo 查询分类下的所有文章
+//  查询分类下的所有文章
+func GetArtilcesByCateId(c *gin.Context) {
+	pageSize, _ := strconv.Atoi(c.Query("pagesize"))
+	pageNum, _ := strconv.Atoi(c.Query("pagenum"))
+	id, _ := strconv.Atoi(c.Param("id"))
+	if pageNum == 0 {
+		pageNum = 1
+	}
+	data, code := model.GetCateArt(pageSize, pageNum, id)
+	c.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"data":    data,
+		"message": errmsg.GetErrMsg(code),
+	})
+}
 
-// todo 查询单个文章信息
+//  查询单个文章信息 通过文章id
+func GetArtInfo(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	code, data := model.GetArtInfo(id)
+	c.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"data":    data,
+		"message": errmsg.GetErrMsg(code),
+	})
+}
 
-//todo 查询分类列表
+//查询所有文章
 func GetAllArt(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.Query("pagesize"))
 	pageNum, _ := strconv.Atoi(c.Query("pagenum"))
@@ -33,8 +56,7 @@ func GetAllArt(c *gin.Context) {
 	if pageNum == 0 {
 		pageNum = 1
 	}
-	data := model.GetCategory(pageSize, pageNum)
-	code = errmsg.SUCCESS
+	data, code := model.GetArt(pageSize, pageNum)
 	//给前端返回的数据
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
@@ -53,7 +75,6 @@ func EditArt(c *gin.Context) {
 		"status":  code,
 		"message": errmsg.GetErrMsg(code),
 	})
-
 }
 
 //删除文章
