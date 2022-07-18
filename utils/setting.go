@@ -8,6 +8,7 @@ import (
 var (
 	AppMode  string
 	HttpPort string
+	JwtKey   string
 
 	Db         string
 	DbHost     string
@@ -31,6 +32,7 @@ func LoadServer(file *ini.File) {
 	//从config.ini里取值，取不到就设为默认值“debug
 	AppMode = file.Section("server").Key("AppMode").MustString("debug")
 	HttpPort = file.Section("server").Key("HttpPort").MustString(":8080")
+	JwtKey = file.Section("server").Key("JwtKey").MustString("m2a0g0u2a1n1g0y5u")
 }
 
 func LoadData(file *ini.File) {
