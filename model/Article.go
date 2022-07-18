@@ -25,23 +25,25 @@ func CreateArt(data *Article) int {
 }
 
 // 查询 文章列表
-func GetArt(pageSize, pageNum int) ([]Article, int) { //pageSize --每页最大数量  pageNum -- 当前页数
+func GetArt(pageSize, pageNum int) ([]Article, int, int64) { //pageSize --每页最大数量  pageNum -- 当前页数
 	var articleList []Article
-	err := db.Preload("Category").Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&articleList).Error
+	var total int64
+	err := db.Preload("Category").Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&articleList).Count(&total).Error
 	if err != nil {
-		return nil, errmsg.ERROR
+		return nil, errmsg.ERROR, 0
 	}
-	return articleList, errmsg.SUCCESS
+	return articleList, errmsg.SUCCESS, total
 }
 
 // 查询分类下的所有文章
-func GetCateArt(pageSize, pageNum, cid int) ([]Article, int) {
+func GetCateArt(pageSize, pageNum, cid int) ([]Article, int, int64) {
 	var cateArtList []Article
-	err := db.Preload("Category").Limit(pageSize).Offset((pageNum-1)*pageSize).Where("cid=?", cid).Find(&cateArtList).Error
+	var total int64
+	err := db.Preload("Category").Limit(pageSize).Offset((pageNum-1)*pageSize).Where("cid=?", cid).Find(&cateArtList).Count(&total).Error
 	if err != nil {
-		return nil, errmsg.ERROR_CATENAME_NOT_EXIST
+		return nil, errmsg.ERROR_CATENAME_NOT_EXIST, 0
 	}
-	return cateArtList, errmsg.SUCCESS
+	return cateArtList, errmsg.SUCCESS, total
 }
 
 // 查询单个文章

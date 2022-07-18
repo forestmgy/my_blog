@@ -9,7 +9,9 @@ import (
 
 func InitRouter() {
 	gin.SetMode(utils.AppMode)
-	r := gin.Default()
+	r := gin.New()
+	r.Use(gin.Recovery())
+	r.Use(middleware.Logger())
 	auth := r.Group("api/v1")
 	auth.Use(middleware.JwtToken()) //需要鉴权的功能
 	{
@@ -25,6 +27,8 @@ func InitRouter() {
 		//得到全部文章
 		auth.PUT("article/:id", v1.EditArt)   //编辑文章
 		auth.DELETE("article/:id", v1.DelArt) //删除文章
+		//上传文件
+		auth.POST("upload", v1.Upload)
 	}
 	routerv1_pub := r.Group("api/v1") //不需要鉴权---游客也可以做到的
 	{

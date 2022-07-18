@@ -37,10 +37,11 @@ func CreateCategory(data *Category) int {
 }
 
 //查询分类列表
-func GetCategory(pageSize, pageNum int) []Category { //pageSize --每页最大数量  pageNum -- 当前页数
+func GetCategory(pageSize, pageNum int) ([]Category, int64) { //pageSize --每页最大数量  pageNum -- 当前页数
 	var cates []Category
-	db.Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&cates)
-	return cates
+	var total int64
+	db.Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&cates).Count(&total)
+	return cates, total
 }
 
 //todo 查询分类下的所有文章

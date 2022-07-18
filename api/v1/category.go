@@ -34,12 +34,13 @@ func GetAllCategory(c *gin.Context) {
 	if pageNum == 0 {
 		pageNum = 1
 	}
-	data := model.GetCategory(pageSize, pageNum)
+	data, total := model.GetCategory(pageSize, pageNum)
 	code = errmsg.SUCCESS
 	//给前端返回的数据
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    data,
+		"total":   total,
 		"message": errmsg.GetErrMsg(code),
 	})
 }

@@ -2,7 +2,6 @@ package model
 
 import (
 	"encoding/base64"
-
 	"golang.org/x/crypto/scrypt"
 	"gorm.io/gorm"
 	"log"
@@ -13,7 +12,7 @@ type User struct {
 	gorm.Model
 	Username string `gorm:"type:varchar(20);not null " json:"username" validate:"required,min=4,max=12" label:"用户名"`
 	Password string `gorm:"type:varchar(500);not null" json:"password" validate:"required,min=6,max=120" label:"密码"`
-	Role     int    `gorm:"type:int" json:"role" validate:"required,gte=2" label:"角色码"`
+	Role     int    `gorm:"type:int;DEFAULT:2" json:"role" validate:"required,gte=2" label:"角色码"`
 }
 
 //查询用户是否存在--通过用户id来查
@@ -47,10 +46,11 @@ func CreateUser(data *User) int {
 }
 
 //查询用户列表并分页
-func GetUsers(pageSize, pageNum int) []User { //pageSize --每页最大数量  pageNum -- 当前页数
+func GetUsers(pageSize, pageNum int) ([]User, int64) { //pageSize --每页最大数量  pageNum -- 当前页数
 	var users []User
-	db.Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&users)
-	return users
+	var total int64
+	db.Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&users).Count(&total)
+	return users, total
 }
 
 //编辑用户
@@ -111,7 +111,7 @@ func CheckLogin(username, password string) int {
 	if user.ID == 0 {
 		return errmsg.ERROR_USER_NOT_EXIST
 	}
-	if user.Role != 0 {
+	if user.Role != 1 {
 		return errmsg.ERROR_USER_NO_RIGHT
 	}
 	if ScryptPassword(password) != user.Password {
