@@ -2,22 +2,50 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+	"html/template"
 	v1 "my_blog/api/v1"
 	"my_blog/middleware"
+	"my_blog/model"
 	"my_blog/utils"
+	"net/http"
+	"time"
 )
 
 func InitRouter() {
 	gin.SetMode(utils.AppMode)
 	r := gin.New()
 	r.Use(gin.Recovery())
-	r.Use(middleware.Logger())
+	//r.Use(middleware.Logger())
+	r.Static("/resource", "./public/resource")
+	r.SetFuncMap(template.FuncMap{"isODD": IsODD, "getNextName": GetNextName, "date": Date, "dateDay": DateDay})
+	r.LoadHTMLGlob("template/**/*")
+	//r.LoadHTMLFiles("template")
+	//r.LoadHTMLGlob("template/pages/*")
+
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "template/index.html", gin.H{
+			"Title":       utils.Title,
+			"Description": utils.Description,
+			"Logo":        utils.Logo,
+			"Github":      utils.Github,
+			"Avatar":      utils.Avatar,
+			"UserName":    utils.UserName,
+			"UserDesc":    utils.UserDesc,
+			"Categorys":   model.GetCategory(),
+			"Navigation":  utils.Navigation,
+		})
+	})
+	r.GET("/login", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "login.html", gin.H{
+			"Title":       utils.Title,
+			"Description": utils.Description,
+		})
+	})
 	auth := r.Group("api/v1")
 	auth.Use(middleware.JwtToken()) //需要鉴权的功能
 	{
 		//User模块的路由接口
-		auth.PUT("user/:id", v1.EditUser)
-		auth.DELETE("user/:id", v1.DelUser)
+
 		//Category模块的路由接口
 		auth.POST("category/add", v1.AddCategory)
 		auth.PUT("category/:id", v1.EditCategory)
@@ -34,7 +62,7 @@ func InitRouter() {
 	{
 		routerv1_pub.POST("user/add", v1.AddUser)
 		routerv1_pub.GET("users", v1.GetAllUser)
-		routerv1_pub.GET("categorys", v1.GetAllCategory)
+		//routerv1_pub.GET("categorys", v1.GetAllCategory)
 		routerv1_pub.GET("articles", v1.GetAllArt)
 		routerv1_pub.GET("article/:id", v1.GetArtInfo)                   //得到单个文章
 		routerv1_pub.GET("article/catelist/:id", v1.GetArtilcesByCateId) //通过分类名ID得到文章列表
@@ -42,4 +70,17 @@ func InitRouter() {
 	}
 
 	r.Run(utils.HttpPort)
+}
+
+func IsODD(num int) bool {
+	return num%2 == 0
+}
+func GetNextName(strs []string, index int) string {
+	return strs[index+1]
+}
+func Date(layout string) string {
+	return time.Now().Format(layout)
+}
+func DateDay(date time.Time) string {
+	return date.Format("2006-01-02 15:04:05")
 }

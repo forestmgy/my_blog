@@ -12,7 +12,6 @@ type User struct {
 	gorm.Model
 	Username string `gorm:"type:varchar(20);not null " json:"username" validate:"required,min=4,max=12" label:"用户名"`
 	Password string `gorm:"type:varchar(500);not null" json:"password" validate:"required,min=6,max=120" label:"密码"`
-	Role     int    `gorm:"type:int;DEFAULT:2" json:"role" validate:"required,gte=2" label:"角色码"`
 }
 
 //查询用户是否存在--通过用户id来查
@@ -54,34 +53,6 @@ func GetUsers(pageSize, pageNum int) ([]User, int64) { //pageSize --每页最大
 }
 
 //编辑用户
-func EditUser(id int, data *User) int {
-	code := CheckUser(id)
-	if code == errmsg.SUCCESS {
-		return errmsg.ERROR_USER_NOT_EXIST
-	}
-	var maps = make(map[string]interface{})
-	maps["username"] = data.Username
-	maps["role"] = data.Role
-	err := db.Model(&User{}).Where("id = ?", id).Updates(maps).Error
-	if err != nil {
-		return errmsg.ERROR
-	}
-	return errmsg.SUCCESS
-}
-
-//删除用户
-func DeleteUser(id int) int {
-	code := CheckUser(id)
-	if code == errmsg.SUCCESS {
-		return errmsg.ERROR_USER_NOT_EXIST
-	}
-	var user User
-	err := db.Where("id = ?", id).Delete(&user).Error
-	if err != nil {
-		return errmsg.ERROR
-	}
-	return errmsg.SUCCESS
-}
 
 //使用Gorm的钩子函数进行加密
 func (u *User) BeforeSave(tx *gorm.DB) (err error) {
@@ -111,9 +82,7 @@ func CheckLogin(username, password string) int {
 	if user.ID == 0 {
 		return errmsg.ERROR_USER_NOT_EXIST
 	}
-	if user.Role != 1 {
-		return errmsg.ERROR_USER_NO_RIGHT
-	}
+
 	if ScryptPassword(password) != user.Password {
 		return errmsg.ERROE_USERPASSWORD_WRONG
 	}

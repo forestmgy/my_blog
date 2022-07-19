@@ -56,32 +56,3 @@ func GetAllUser(c *gin.Context) {
 		"message": errmsg.GetErrMsg(code),
 	})
 }
-
-//编辑用户
-func EditUser(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	var data model.User
-	_ = c.ShouldBindJSON(&data)
-	code = model.CheckUserName(data.Username) //这里面并不是在找这个用户是否存在，其实我们是想知道这个用户名是不是被人用过了
-	if code == errmsg.SUCCESS {
-		code = model.EditUser(id, &data)
-	}
-	//if code == errmsg.ERROR_USERNAME_DUPLICATED {
-	//	c.Abo
-	//}
-	c.JSON(http.StatusOK, gin.H{
-		"status":  code,
-		"message": errmsg.GetErrMsg(code),
-	})
-
-}
-
-//删除用户
-func DelUser(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	code = model.DeleteUser(id)
-	c.JSON(http.StatusOK, gin.H{
-		"status":  code,
-		"message": errmsg.GetErrMsg(code),
-	})
-}

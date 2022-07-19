@@ -8,11 +8,11 @@ import (
 type Article struct {
 	Category Category `gorm:"foreignkey:Cid"`
 	gorm.Model
-	Title   string `gorm:"type:varchar(100);not null" json:"title"`
-	Cid     int    `gorm:"type:int;not null" json:"cid"`  //category id 文章对应分类的id
-	Desc    string `gorm:"type:varchar(200)" json:"desc"` //Description --文章描述
-	Content string `gorm:"type:longtext" json:"content"`
-	Img     string `gorm:"type:varchar(100)" json:"img"`
+	Title    string `gorm:"type:varchar(100);not null" json:"title"`
+	Cid      int    `gorm:"type:int;not null" json:"cid"`  //category id 文章对应分类的id
+	Desc     string `gorm:"type:varchar(200)" json:"desc"` //Description --文章描述
+	Content  string `gorm:"type:longtext" json:"content"`
+	Markdown string `grom:"type:longtext" json:"markdown"`
 }
 
 //新增文章
@@ -63,7 +63,6 @@ func EditArt(id int, data *Article) int {
 	maps["cid"] = data.Cid
 	maps["desc"] = data.Desc
 	maps["content"] = data.Content
-	maps["img"] = data.Img
 	err := db.Model(&Article{}).Where("ID = ?", id).Updates(maps).Error
 	if err != nil {
 		return errmsg.ERROR

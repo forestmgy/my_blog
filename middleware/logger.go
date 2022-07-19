@@ -13,7 +13,7 @@ import (
 
 func Logger() gin.HandlerFunc {
 	filepath := "log/log"
-	linkName := "latest_log.log"
+	//linkName := "latest_log.log"
 	src, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		fmt.Println("err", err)
@@ -25,7 +25,7 @@ func Logger() gin.HandlerFunc {
 		filepath+"%Y%m%d.log",
 		retalog.WithMaxAge(time.Hour*7*24),
 		retalog.WithRotationTime(time.Hour*24),
-		retalog.WithLinkName(linkName),
+		//retalog.WithLinkName(linkName),
 	)
 
 	writeMap := lfshook.WriterMap{

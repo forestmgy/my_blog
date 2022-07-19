@@ -3,6 +3,7 @@ package utils
 import (
 	"gopkg.in/ini.v1"
 	"log"
+	"strings"
 )
 
 var (
@@ -21,6 +22,16 @@ var (
 	SecretKey   string
 	Bucket      string
 	QiniuServer string
+
+	Title       string
+	Description string
+	Logo        string
+	Navigation  []string
+	Github      string
+	Wechat      string
+	Avatar      string
+	UserName    string
+	UserDesc    string
 )
 
 func init() {
@@ -32,6 +43,7 @@ func init() {
 	LoadServer(file)
 	LoadData(file)
 	LoadQiniu(file)
+	LoadInfo(file)
 }
 
 func LoadServer(file *ini.File) {
@@ -55,4 +67,16 @@ func LoadQiniu(file *ini.File) {
 	SecretKey = file.Section("qiniu").Key("SecretKey").String()
 	Bucket = file.Section("qiniu").Key("Bucket").String()
 	QiniuServer = file.Section("qiniu").Key("QiniuServer").String()
+}
+
+func LoadInfo(file *ini.File) {
+	Title = file.Section("info").Key("Title").String()
+	Description = file.Section("info").Key("Description").String()
+	Logo = file.Section("info").Key("Logo").String()
+	Navigation = strings.Split(file.Section("info").Key("Navigation").String(), ",")
+	Github = file.Section("info").Key("Github").String()
+	Wechat = file.Section("info").Key("Wechat").String()
+	Avatar = file.Section("info").Key("Avatar").String()
+	UserName = file.Section("info").Key("UserName").String()
+	UserDesc = file.Section("info").Key("UserDesc").String()
 }

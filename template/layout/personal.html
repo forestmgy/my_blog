@@ -1,0 +1,32 @@
+{{define "personal"}}
+<div class="personal">
+  <div class="personal-box">
+    <img class="personal-avatar" src="{{.Avatar}}" alt="{{.UserName}}" />
+    <h1 class="personal-name">{{.UserName}}</h1>
+    <p class="personal-desc">{{.UserDesc}}</p>
+    <span class="gap-dashed"></span>
+    <ul class="personal-action">
+      <li>
+        <i class="iconfont icon-github"></i>
+        <a href="https://github.com/forestmgy" target="_blank"> Github</a>
+      </li>
+      <li>
+        <i class="iconfont icon-weixin"></i>
+        <a href="https://s3.bmp.ovh/imgs/2022/07/19/f52f81e0ed850b2f.jpg" target="_blank"> Wechat</a>
+      </li>
+    </ul>
+  </div>
+  <span class="gap-solid"></span>
+  <div class="personal-box">
+    <div class="personal-cteg">
+      <h2>分类：</h2>
+      {{range $index,$elem := .Categorys}}
+      <div>
+        <i class="iconfont icon-fenlei-copy"></i>
+        <a href="/c/{{$elem.ID}}">{{$elem.Name}}</a>
+      </div>
+      {{end}}
+    </div>
+  </div>
+</div>
+{{end}}

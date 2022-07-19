@@ -27,23 +27,23 @@ func AddCategory(c *gin.Context) {
 // todo 查询分类下的所有文章
 
 //查询分类列表
-func GetAllCategory(c *gin.Context) {
-	pageSize, _ := strconv.Atoi(c.Query("pagesize"))
-	pageNum, _ := strconv.Atoi(c.Query("pagenum"))
-
-	if pageNum == 0 {
-		pageNum = 1
-	}
-	data, total := model.GetCategory(pageSize, pageNum)
-	code = errmsg.SUCCESS
-	//给前端返回的数据
-	c.JSON(http.StatusOK, gin.H{
-		"status":  code,
-		"data":    data,
-		"total":   total,
-		"message": errmsg.GetErrMsg(code),
-	})
-}
+//func GetAllCategory(c *gin.Context) {
+//	pageSize, _ := strconv.Atoi(c.Query("pagesize"))
+//	pageNum, _ := strconv.Atoi(c.Query("pagenum"))
+//
+//	if pageNum == 0 {
+//		pageNum = 1
+//	}
+//	data, total := model.GetCategory(pageSize, pageNum)
+//	code = errmsg.SUCCESS
+//	//给前端返回的数据
+//	c.JSON(http.StatusOK, gin.H{
+//		"status":  code,
+//		"data":    data,
+//		"total":   total,
+//		"message": errmsg.GetErrMsg(code),
+//	})
+//}
 
 //编辑分类名
 func EditCategory(c *gin.Context) {
