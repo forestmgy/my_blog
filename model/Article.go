@@ -3,6 +3,7 @@ package model
 import (
 	"gorm.io/gorm"
 	"my_blog/utils/errmsg"
+	"time"
 )
 
 type Article struct {
@@ -13,6 +14,14 @@ type Article struct {
 	Desc     string `gorm:"type:varchar(200)" json:"desc"` //Description --文章描述
 	Content  string `gorm:"type:longtext" json:"content"`
 	Markdown string `grom:"type:longtext" json:"markdown"`
+}
+type ArticleList struct {
+	ID        uint
+	Name      string
+	Title     string
+	Cid       int
+	Content   string
+	CreatedAt time.Time
 }
 
 //新增文章
@@ -78,4 +87,19 @@ func DeleteArt(id int) int {
 		return errmsg.ERROR
 	}
 	return errmsg.SUCCESS
+}
+
+func GetArtSpec(arts []Article) []ArticleList {
+	var res []ArticleList
+	var tmp ArticleList
+	for i := 0; i < len(arts); i++ {
+		tmp.Name = arts[i].Category.Name
+		tmp.CreatedAt = arts[i].CreatedAt
+		tmp.Cid = arts[i].Cid
+		tmp.Title = arts[i].Title
+		tmp.Content = arts[i].Content
+		tmp.ID = arts[i].ID
+		res = append(res, tmp)
+	}
+	return res
 }

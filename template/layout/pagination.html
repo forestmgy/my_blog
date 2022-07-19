@@ -21,10 +21,11 @@
     <li class="pagination-next iconfont icon-jiantouyou"></li>
     {{end}}
   </ul>
-  {{else}}
+  {{if eq $.PageEnd false}}
     <ul class="pagination">
       <li class="pagination-total">共{{.Total}}条</li>
     </ul>
+      {{end}}
   {{end}}
 </div>
 {{end}}

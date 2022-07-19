@@ -5,9 +5,7 @@ import (
 	"html/template"
 	v1 "my_blog/api/v1"
 	"my_blog/middleware"
-	"my_blog/model"
 	"my_blog/utils"
-	"net/http"
 	"time"
 )
 
@@ -22,25 +20,8 @@ func InitRouter() {
 	//r.LoadHTMLFiles("template")
 	//r.LoadHTMLGlob("template/pages/*")
 
-	r.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "template/index.html", gin.H{
-			"Title":       utils.Title,
-			"Description": utils.Description,
-			"Logo":        utils.Logo,
-			"Github":      utils.Github,
-			"Avatar":      utils.Avatar,
-			"UserName":    utils.UserName,
-			"UserDesc":    utils.UserDesc,
-			"Categorys":   model.GetCategory(),
-			"Navigation":  utils.Navigation,
-		})
-	})
-	r.GET("/login", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "login.html", gin.H{
-			"Title":       utils.Title,
-			"Description": utils.Description,
-		})
-	})
+	r.GET("/", v1.GetHome)
+	r.GET("/login", v1.LoginView)
 	auth := r.Group("api/v1")
 	auth.Use(middleware.JwtToken()) //需要鉴权的功能
 	{
@@ -83,4 +64,7 @@ func Date(layout string) string {
 }
 func DateDay(date time.Time) string {
 	return date.Format("2006-01-02 15:04:05")
+}
+func isEnd(page, pagecount int) bool {
+	return page != pagecount
 }
