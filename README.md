@@ -1,2 +1,2 @@
 # my_blog
-it's a simple blog based on go and vue
+it's a simple blog based on go and html
