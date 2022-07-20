@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{.CdnURL}}/css/editormd.min.css" />
+    <link rel="stylesheet" href="resource/css/editormd.min.css" />
     <link
       rel="stylesheet"
       href="/resource/css/font-awesome.min.css"
@@ -26,7 +26,7 @@
             <h1 class="category-label">分类：</h1>
             <ul class="category category-style">
               {{range $index, $elem := .Categorys}}
-              <li value="{{$elem.Cid}}">{{$elem.Name}}</li>
+              <li value="{{$elem.ID}}">{{$elem.Name}}</li>
               {{end}}
             </ul>
             <h1 class="category-label">类型：</h1>
@@ -49,10 +49,10 @@
   </body>
   <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
   <script src="/resource/js/editormd.js"></script>
-  <script src="{{.CdnURL}}/js/cos-js-sdk-v5.min.js"></script>
+  <script src="resource/js/cos-js-sdk-v5.min.js"></script>
   <script src="https://cdn.staticfile.org/qiniu-js/3.4.0/qiniu.min.js"></script>
   <script>
-    var CNDURL = "{{.CdnURL}}";
+    var CNDURL = "resource";
   </script>
   <script src="/resource/js/writing.js"></script>
 </html>

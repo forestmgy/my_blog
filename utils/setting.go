@@ -32,6 +32,7 @@ var (
 	Avatar      string
 	UserName    string
 	UserDesc    string
+	CdnUrl      string
 )
 
 func init() {
@@ -79,4 +80,5 @@ func LoadInfo(file *ini.File) {
 	Avatar = file.Section("info").Key("Avatar").String()
 	UserName = file.Section("info").Key("UserName").String()
 	UserDesc = file.Section("info").Key("UserDesc").String()
+	CdnUrl = file.Section("info").Key("CdnUrl").String()
 }

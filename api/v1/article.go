@@ -91,7 +91,8 @@ func DelArt(c *gin.Context) {
 
 func Write(c *gin.Context) {
 	c.HTML(http.StatusOK, "writing.html", gin.H{
-		"CdnURL": 1,
-		"Title":  "test",
+		//"CdnURL":    utils.CdnUrl,
+		"Title":     "test",
+		"Categorys": model.GetCategory(),
 	})
 }
