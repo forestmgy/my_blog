@@ -88,3 +88,10 @@ func DelArt(c *gin.Context) {
 		"message": errmsg.GetErrMsg(code),
 	})
 }
+
+func Write(c *gin.Context) {
+	c.HTML(http.StatusOK, "writing.html", gin.H{
+		"CdnURL": 1,
+		"Title":  "test",
+	})
+}

@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"my_blog/middleware"
 	"my_blog/model"
@@ -11,18 +12,27 @@ import (
 
 func Login(c *gin.Context) {
 	var data model.User
-	c.ShouldBindJSON(&data)
-	var code int
+	err := c.ShouldBindJSON(&data)
+	if err != nil {
+		fmt.Println(err)
+	}
 	var token string
-	code = model.CheckLogin(data.Username, data.Password)
+	var userinfo model.UserInfo
+	//t := c.Request.Header
+	//body := c.Request
+	code, user := model.CheckLogin(data.Username, data.Password)
+	fmt.Println(data)
 	if code == errmsg.SUCCESS {
 		token, code = middleware.SetToken(data.Username)
 	}
-
+	userinfo.ID = int(user.ID)
+	userinfo.UserName = user.Username
+	fmt.Println(userinfo)
+	println(token)
 	c.JSON(http.StatusOK, gin.H{
-		"status":  code,
-		"message": errmsg.GetErrMsg(code),
-		"token":   token,
+		"code":     code,
+		"userInfo": userinfo,
+		"token":    token,
 	})
 }
 

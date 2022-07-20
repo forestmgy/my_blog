@@ -51,23 +51,26 @@ function loginLogic() {
   $(".login-submint").click(function () {
     var tipEle = $(".login-tip");
     var name = $(".login-name").val();
-    var passwd = $(".login-passwd").val();
+    var password = $(".login-passwd").val();
     if (!name) return tipEle.show().text("请输入用户名");
-    if (!passwd) return tipEle.show().text("请输入密码");
+    if (!password) return tipEle.show().text("请输入密码");
 
     // md5加密
-    var MD5Passwd = new Hashes.MD5().hex(passwd + SALT);
+    // var MD5Passwd = new Hashes.MD5().hex(passwd + SALT);
     $.ajax({
       url: "/api/v1/login",
-      data: JSON.stringify({ username: name, passwd: MD5Passwd }),
+      data: JSON.stringify({ username: name, password: password }),
       contentType: "application/json",
       type: "POST",
       success: function (res) {
           if (res.code !== 200) {
             return tipEle.show().text(res.error);
           }
-          var data = res.data || {};
+          console.log(res.userInfo)
+          var data = res || {};
           localStorage.setItem(TOKEN_KEY, data.token);
+          console.log(data.token)
+          // console.log(data.userInfo)
           localStorage.setItem(USER_KEY, JSON.stringify(data.userInfo));
           location.href = "/";
       },

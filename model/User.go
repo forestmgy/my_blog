@@ -14,6 +14,11 @@ type User struct {
 	Password string `gorm:"type:varchar(500);not null" json:"password" validate:"required,min=6,max=120" label:"密码"`
 }
 
+type UserInfo struct {
+	ID       int    `json:"id"`
+	UserName string `json:"userName"`
+}
+
 //查询用户是否存在--通过用户id来查
 func CheckUser(userid int) int {
 	var users User
@@ -75,16 +80,16 @@ func ScryptPassword(password string) string {
 }
 
 //登录验证
-func CheckLogin(username, password string) int {
+func CheckLogin(username, password string) (int, User) {
 	var user User
 
 	db.Where("username =?", username).First(&user)
 	if user.ID == 0 {
-		return errmsg.ERROR_USER_NOT_EXIST
+		return errmsg.ERROR_USER_NOT_EXIST, user
 	}
 
 	if ScryptPassword(password) != user.Password {
-		return errmsg.ERROE_USERPASSWORD_WRONG
+		return errmsg.ERROE_USERPASSWORD_WRONG, user
 	}
-	return errmsg.SUCCESS
+	return errmsg.SUCCESS, user
 }
