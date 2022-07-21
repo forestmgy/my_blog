@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"my_blog/model"
 	"my_blog/utils/errmsg"
@@ -8,19 +9,22 @@ import (
 	"strconv"
 )
 
+var scode int
+
 //添加分类
 func AddCategory(c *gin.Context) {
 	var data model.Category
 	_ = c.ShouldBindJSON(&data)
-	code = model.CheckCategoryName(data.Name)
-	if code == errmsg.SUCCESS {
+	scode = model.CheckCategoryName(data.Name)
+	fmt.Println("状态码", scode)
+	if scode == errmsg.SUCCESS {
 		model.CreateCategory(&data)
 	}
+	fmt.Println("状态码", scode)
 	//给前端返回的数据
 	c.JSON(http.StatusOK, gin.H{
-		"status":  code,
-		"data":    data,
-		"message": errmsg.GetErrMsg(code),
+		"code": scode,
+		"data": data,
 	})
 }
 
@@ -50,15 +54,15 @@ func EditCategory(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var data model.Category
 	_ = c.ShouldBindJSON(&data)
-	code = model.CheckCategoryName(data.Name) //这里面并不是在找这个分类是否存在，其实我们是想知道这个分类名是不是被人用过了
-	if code == errmsg.SUCCESS {
-		code = model.EditCategory(id, &data)
+	scode = model.CheckCategoryName(data.Name) //这里面并不是在找这个分类是否存在，其实我们是想知道这个分类名是不是被人用过了
+	if scode == errmsg.SUCCESS {
+		scode = model.EditCategory(id, &data)
 	}
 	//if code == errmsg.ERROR_USERNAME_DUPLICATED {
 	//	c.Abo
 	//}
 	c.JSON(http.StatusOK, gin.H{
-		"status":  code,
+		"status":  scode,
 		"message": errmsg.GetErrMsg(code),
 	})
 
@@ -69,7 +73,7 @@ func DelCategory(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	code = model.DeleteCategory(id)
 	c.JSON(http.StatusOK, gin.H{
-		"status":  code,
+		"status":  scode,
 		"message": errmsg.GetErrMsg(code),
 	})
 }

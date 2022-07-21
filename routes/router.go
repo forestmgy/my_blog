@@ -15,7 +15,7 @@ func InitRouter() {
 	r.Use(gin.Recovery())
 	//r.Use(middleware.Logger())
 	r.Static("/resource", "./public/resource")
-	r.SetFuncMap(template.FuncMap{"isODD": IsODD, "getNextName": GetNextName, "date": Date, "dateDay": DateDay})
+	r.SetFuncMap(template.FuncMap{"isODD": IsODD, "getNextName": GetNextName, "date": Date, "dateDay": DateDay, "date1": Date1})
 	r.LoadHTMLGlob("template/**/*")
 	//r.LoadHTMLFiles("template")
 	//r.LoadHTMLGlob("template/pages/*")
@@ -66,6 +66,6 @@ func Date(layout string) string {
 func DateDay(date time.Time) string {
 	return date.Format("2006-01-02 15:04:05")
 }
-func isEnd(page, pagecount int) bool {
-	return page != pagecount
+func Date1(date time.Time) string {
+	return date.Format("2006-01-02")
 }

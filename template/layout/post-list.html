@@ -3,7 +3,7 @@
     {{range $index, $elem := .Articles}}
       <li class="post-label">
         <a href="/p/{{$elem.ID}}.html"><h2>{{$elem.Title}}</h2></a>
-        <p>{{$elem.Content}}</p>
+{{/*        <p>{{$elem.Content}}</p>*/}}
         <div class="post-action">
           <span>
         <i class="iconfont icon-wenjianjia"></i>
@@ -11,7 +11,7 @@
       </span>
           <span>
         <i class="iconfont icon-riqi"></i>
-        &nbsp;{{date "2006-01-02"}}
+        &nbsp;{{date1 $elem.CreatedAt}}
       </span>
         </div>
       </li>

@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"my_blog/model"
 	"my_blog/utils/errmsg"
@@ -11,7 +12,9 @@ import (
 //添加文章
 func AddArt(c *gin.Context) {
 	var data model.Article
+	s, _ := c.Get("cid")
 	_ = c.ShouldBindJSON(&data)
+	fmt.Println(s)
 	code = model.CreateArt(&data)
 	//给前端返回的数据
 	c.JSON(http.StatusOK, gin.H{
@@ -42,8 +45,9 @@ func GetArtilcesByCateId(c *gin.Context) {
 func GetArtInfo(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	code, data := model.GetArtInfo(id)
+	fmt.Println(data)
 	c.JSON(http.StatusOK, gin.H{
-		"status":  code,
+		"code":    code,
 		"data":    data,
 		"message": errmsg.GetErrMsg(code),
 	})

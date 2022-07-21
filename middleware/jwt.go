@@ -1,12 +1,12 @@
 package middleware
 
 import (
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"my_blog/utils"
 	"my_blog/utils/errmsg"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -55,6 +55,7 @@ func CheckToken(token string) (*MyClaims, int) {
 func JwtToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenHeader := c.Request.Header.Get("Authorization")
+		fmt.Println("1111", tokenHeader)
 		if tokenHeader == "" { //头部为空
 			code = errmsg.ERROR_TOKEN_NOT_EXIST
 			c.JSON(http.StatusOK, gin.H{
@@ -64,17 +65,8 @@ func JwtToken() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		checkToken := strings.SplitN(tokenHeader, " ", 2) //todo 待学习
-		if len(checkToken) != 2 && checkToken[0] != "Bearer" {
-			code = errmsg.ERROR_TOKEN_TYPEWRONG
-			c.JSON(http.StatusOK, gin.H{
-				"code":    code,
-				"message": errmsg.GetErrMsg(code),
-			})
-			c.Abort()
-			return
-		}
-		key, Tcode := CheckToken(checkToken[1])
+
+		key, Tcode := CheckToken(tokenHeader)
 		if Tcode == errmsg.ERROR {
 			code = errmsg.ERROR_TOKEN_WRONG
 			c.JSON(http.StatusOK, gin.H{

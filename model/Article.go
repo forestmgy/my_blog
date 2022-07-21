@@ -16,7 +16,7 @@ type Article struct {
 	Markdown string `grom:"type:longtext" json:"markdown"`
 }
 type ArticleList struct {
-	ID        uint
+	ID        int
 	Name      string
 	Title     string
 	Cid       int
@@ -98,7 +98,7 @@ func GetArtSpec(arts []Article) []ArticleList {
 		tmp.Cid = arts[i].Cid
 		tmp.Title = arts[i].Title
 		tmp.Content = arts[i].Content
-		tmp.ID = arts[i].ID
+		tmp.ID = int(arts[i].ID)
 		res = append(res, tmp)
 	}
 	return res
