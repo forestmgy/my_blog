@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"my_blog/utils"
@@ -55,7 +54,7 @@ func CheckToken(token string) (*MyClaims, int) {
 func JwtToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenHeader := c.Request.Header.Get("Authorization")
-		fmt.Println("1111", tokenHeader)
+		//fmt.Println("1111", tokenHeader)
 		if tokenHeader == "" { //头部为空
 			code = errmsg.ERROR_TOKEN_NOT_EXIST
 			c.JSON(http.StatusOK, gin.H{

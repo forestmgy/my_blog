@@ -21,14 +21,14 @@ func Login(c *gin.Context) {
 	//t := c.Request.Header
 	//body := c.Request
 	code, user := model.CheckLogin(data.Username, data.Password)
-	fmt.Println(data)
+	//fmt.Println(data)
 	if code == errmsg.SUCCESS {
 		token, code = middleware.SetToken(data.Username)
 	}
 	userinfo.ID = int(user.ID)
 	userinfo.UserName = user.Username
-	fmt.Println(userinfo)
-	println(token)
+	//fmt.Println(userinfo)
+	//println(token)
 	c.JSON(http.StatusOK, gin.H{
 		"code":     code,
 		"userInfo": userinfo,

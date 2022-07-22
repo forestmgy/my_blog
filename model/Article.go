@@ -72,6 +72,7 @@ func EditArt(id int, data *Article) int {
 	maps["cid"] = data.Cid
 	maps["desc"] = data.Desc
 	maps["content"] = data.Content
+	maps["markdown"] = data.Markdown
 	err := db.Model(&Article{}).Where("ID = ?", id).Updates(maps).Error
 	if err != nil {
 		return errmsg.ERROR
@@ -102,4 +103,15 @@ func GetArtSpec(arts []Article) []ArticleList {
 		res = append(res, tmp)
 	}
 	return res
+}
+
+func GetSingleSpecArt(art Article) ArticleList {
+	var tmp ArticleList
+	tmp.Name = art.Category.Name
+	tmp.CreatedAt = art.CreatedAt
+	tmp.Cid = art.Cid
+	tmp.Title = art.Title
+	tmp.Content = art.Content
+	tmp.ID = int(art.ID)
+	return tmp
 }

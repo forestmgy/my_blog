@@ -13,7 +13,7 @@ function setAjaxToken(xhr) {
 
 function initEditor() {
   // 取默认标题
-  headInput.val("");
+  headInput.val(ArticleItem.title);
   // 初始化编辑器
   MdEditor = editormd("editormd", {
     width: "99.5%",
@@ -22,13 +22,13 @@ function initEditor() {
     editorTheme: "default",
     path: CNDURL + "/lib/",
     placeholder: "",
-    appendMarkdown: "",
+    appendMarkdown: ArticleItem.markdown,
     codeFold: true,
     saveHTMLToTextarea: true,
     tocm: true,
     imageUpload: true,
     taskList: true,
-    // emoji: true,
+    emoji: true,
     imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
     // imageUploadURL: "/api/v1/uploadfile",
 
@@ -74,7 +74,7 @@ function initEditor() {
 
 function getArticleItem(id) {
   $.ajax({
-    url: "/api/v1/article/:" + id,
+    url: "/api/v1/article/" + id,
     type: "GET",
     contentType: "application/json",
     success: function (res) {
@@ -83,6 +83,7 @@ function getArticleItem(id) {
         return alert(res.error);
       }
       ArticleItem = res.data || {};
+      console.log(ArticleItem)
       initActive();
       initEditor();
     },
@@ -100,12 +101,15 @@ function initCache() {
   headInput = $(".header-input");
   var query = new URLSearchParams(location.search);
   var _id = query.get("id");
+  // console.log(_id)
   if (_id) return getArticleItem(_id);
   // 取本地缓存
-  ArticleItem.title = window.localStorage.getItem(TITLE_KEY);
-  ArticleItem.markdown = window.localStorage.getItem(CONTENT_KEY) || "";
+  // ArticleItem.title = window.localStorage.getItem(TITLE_KEY);
+  // ArticleItem.markdown = window.localStorage.getItem(CONTENT_KEY) || "";
   // initEditor
   initEditor();
+  // MdEditor.setMarkdown(ArticleItem.markdown)
+  // headInput.setValue(ArticleItem.title)
   // 自动保存
   setInterval(() => saveHandler, AUTO_SAVE_TIME);
 }
@@ -194,14 +198,44 @@ function publishHandler() {
 
 }
 
+function updatearticle(){
+  //拿到文章id
+  var query = new URLSearchParams(location.search);
+  var id = query.get("id");
+  getArticleItem(id)
+  ArticleItem.markdown = MdEditor.getMarkdown()
+  ArticleItem.title = headInput.val()
+  ArticleItem.content=MdEditor.getPreviewedHTML()
+
+  $.ajax(
+      {// Authorization:localStorage.getItem("AUTH_TOKEN"),
+        url: "/api/v1/article/"+id,
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({ cid: ArticleItem.cid, content: ArticleItem.content , markdown:ArticleItem.markdown,title:ArticleItem.title }),
+        success: function (res) {
+          if (res.code !== 200) return alert(res.error);
+          if (ArticleItem.id) return $(".publish-tip").text("更新成功");
+          console.log(ArticleItem)
+          ArticleItem = res.data || {};
+          if (!ArticleItem.id) {
+            clearHandler();
+          }
+        },
+        beforeSend: setAjaxToken,
+      });
+  location.reload()
+}
+
 $(function () {
   // 初始化缓存
   initCache();
   // 返回首页
+  console.log("1")
   var back = $(".home-btn");
   back.click(function () {
     clearHandler()
-    location.href = ArticleItem.pid ? "/p/" + ArticleItem.pid + ".html" : "/";
+    location.href = ArticleItem.id ? "/article/" + ArticleItem.id + ".html" : "/";
   });
   if (location.search) back.text("查看");
   // 保存
@@ -219,7 +253,11 @@ $(function () {
     drop.hide();
   });
   // 发布逻辑
-  $(".publish-btn").click(publishHandler);
+  if (!location.search) {
+    $(".publish-btn").click(publishHandler);
+  } else{
+    $(".publish-btn").click(updatearticle)
+  }
   // 选择分类
   $(".category").on("click", "li", function (event) {
     var target = $(event.target);

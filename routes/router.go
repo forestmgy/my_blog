@@ -23,6 +23,7 @@ func InitRouter() {
 	r.GET("/", v1.GetHome)
 	r.GET("/login", v1.LoginView)
 	r.GET("/writing", v1.Write)
+	r.GET("/article/:id.html", v1.GetDetail)
 	auth := r.Group("api/v1")
 	auth.Use(middleware.JwtToken()) //需要鉴权的功能
 	{

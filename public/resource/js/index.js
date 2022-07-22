@@ -35,7 +35,8 @@ function initEditLogic() {
     var delEle = $(".detail-delete");
     // 绑定删除事件
     delEle.click(function () {
-      deleteDetail(delEle.attr("pid"));
+      console.log(delEle.attr("id"))
+      deleteDetail(delEle.attr("id"));
     });
   }
 }
@@ -112,11 +113,11 @@ function deleteDetail(id) {
   var r = confirm("是否确认删除？");
   if (!r) return;
   $.ajax({
-    url: "/api/v1/post/" + id,
+    url: "/api/v1/article/" + id,
     type: "DELETE",
     contentType: "application/json",
     success: function (res) {
-      if (res.code != 200) alert(res.error);
+      if (res.code !== 200) alert(res.error);
       location.href = "/";
     },
     beforeSend: setAjaxToken,

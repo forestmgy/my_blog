@@ -3,10 +3,13 @@ package v1
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"html/template"
 	"my_blog/model"
+	"my_blog/utils"
 	"my_blog/utils/errmsg"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 //添加文章
@@ -45,7 +48,7 @@ func GetArtilcesByCateId(c *gin.Context) {
 func GetArtInfo(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	code, data := model.GetArtInfo(id)
-	fmt.Println(data)
+	//fmt.Println(data)
 	c.JSON(http.StatusOK, gin.H{
 		"code":    code,
 		"data":    data,
@@ -76,19 +79,21 @@ func EditArt(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var data model.Article
 	_ = c.ShouldBindJSON(&data)
+	fmt.Println(data)
 	code = model.EditArt(id, &data)
 	c.JSON(http.StatusOK, gin.H{
-		"status":  code,
-		"message": errmsg.GetErrMsg(code),
+		"code": code,
 	})
 }
 
 //删除文章
 func DelArt(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
+	fmt.Println("qqqq", id)
 	code = model.DeleteArt(id)
+
 	c.JSON(http.StatusOK, gin.H{
-		"status":  code,
+		"code":    code,
 		"message": errmsg.GetErrMsg(code),
 	})
 }
@@ -96,7 +101,28 @@ func DelArt(c *gin.Context) {
 func Write(c *gin.Context) {
 	c.HTML(http.StatusOK, "writing.html", gin.H{
 		//"CdnURL":    utils.CdnUrl,
-		"Title":     "test",
+		"Title":     "forrest",
 		"Categorys": model.GetCategory(),
+	})
+}
+
+func GetDetail(c *gin.Context) {
+	path := c.Request.URL.String()
+	IdStr := strings.TrimPrefix(path, "/article/")
+	IdStr = strings.TrimSuffix(IdStr, ".html")
+	id, _ := strconv.Atoi(IdStr)
+	_, data := model.GetArtInfo(id)
+	//fmt.Println("QQQQ", c.Request.URL)
+	c.HTML(http.StatusOK, "detail.html", gin.H{
+		"Title":       utils.Title,
+		"Description": utils.Description,
+		"Logo":        utils.Logo,
+		"Navigation":  utils.Navigation,
+		"Title1":      model.GetSingleSpecArt(data).Title,
+		"Cid1":        model.GetSingleSpecArt(data).Cid,
+		"Name1":       model.GetSingleSpecArt(data).Name,
+		"ID1":         model.GetSingleSpecArt(data).ID,
+		"CreatedAt1":  model.GetSingleSpecArt(data).CreatedAt,
+		"Content1":    template.HTML(model.GetSingleSpecArt(data).Content),
 	})
 }
