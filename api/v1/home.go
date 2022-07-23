@@ -12,7 +12,7 @@ func GetHome(c *gin.Context) {
 	page, _ := strconv.Atoi(c.Query("page"))
 
 	arts, _, _ := model.GetArt(10, page)
-	_, _, total := model.GetArt(100, 1)
+	_, _, total := model.GetArt(10000, 1)
 	artsSpec := model.GetArtSpec(arts)
 	pageCount := (total-1)/10 + 1
 	var pages []int

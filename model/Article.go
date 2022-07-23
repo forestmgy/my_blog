@@ -10,8 +10,7 @@ type Article struct {
 	Category Category `gorm:"foreignkey:Cid"`
 	gorm.Model
 	Title    string `gorm:"type:varchar(100);not null" json:"title"`
-	Cid      int    `gorm:"type:int;not null" json:"cid"`  //category id 文章对应分类的id
-	Desc     string `gorm:"type:varchar(200)" json:"desc"` //Description --文章描述
+	Cid      int    `gorm:"type:int;not null" json:"cid"` //category id 文章对应分类的id
 	Content  string `gorm:"type:longtext" json:"content"`
 	Markdown string `grom:"type:longtext" json:"markdown"`
 }
@@ -70,7 +69,6 @@ func EditArt(id int, data *Article) int {
 	var maps = make(map[string]interface{})
 	maps["title"] = data.Title
 	maps["cid"] = data.Cid
-	maps["desc"] = data.Desc
 	maps["content"] = data.Content
 	maps["markdown"] = data.Markdown
 	err := db.Model(&Article{}).Where("ID = ?", id).Updates(maps).Error

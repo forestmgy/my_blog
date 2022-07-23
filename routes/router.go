@@ -19,7 +19,7 @@ func InitRouter() {
 	r.LoadHTMLGlob("template/**/*")
 	//r.LoadHTMLFiles("template")
 	//r.LoadHTMLGlob("template/pages/*")
-
+	r.GET("/c/:id", v1.GetArticleByCategoryId)
 	r.GET("/", v1.GetHome)
 	r.GET("/login", v1.LoginView)
 	r.GET("/writing", v1.Write)

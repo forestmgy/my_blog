@@ -126,3 +126,30 @@ func GetDetail(c *gin.Context) {
 		"Content1":    template.HTML(model.GetSingleSpecArt(data).Content),
 	})
 }
+
+func GetArticleByCategoryId(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	page, _ := strconv.Atoi(c.Query("page"))
+
+	arts, _, _ := model.GetCateArt(10, page, id)
+	_, _, total := model.GetCateArt(10000, 1, id)
+	artsSpec := model.GetArtSpec(arts)
+	Name := artsSpec[0].Name
+	pageCount := (total-1)/10 + 1
+	var pages []int
+	for i := 0; i < int(pageCount); i++ {
+		pages = append(pages, i+1)
+	}
+	c.HTML(http.StatusOK, "category.html", gin.H{
+		"Title":        utils.Title,
+		"Description":  utils.Description,
+		"Logo":         utils.Logo,
+		"Navigation":   utils.Navigation,
+		"Articles":     artsSpec,
+		"Total":        total,
+		"Page":         page,
+		"Pages":        pages,
+		"PageEnd":      page != int(pageCount),
+		"CategoryName": Name,
+	})
+}
