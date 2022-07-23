@@ -42,6 +42,14 @@ func GetArt(pageSize, pageNum int) ([]Article, int, int64) { //pageSize --每页
 	}
 	return articleList, errmsg.SUCCESS, total
 }
+func GetAllArt() ([]Article, int) {
+	var articleList []Article
+	err := db.Preload("Category").Find(&articleList).Error
+	if err != nil {
+		return nil, errmsg.ERROR
+	}
+	return articleList, errmsg.SUCCESS
+}
 
 // 查询分类下的所有文章
 func GetCateArt(pageSize, pageNum, cid int) ([]Article, int, int64) {

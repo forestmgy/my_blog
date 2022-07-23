@@ -16,7 +16,6 @@
 <body>
 {{template "header" .}}
 <main class="container">
-  <div class="container-left">{{template "personal" .}}</div>
   <div class="container-right">
     <ul class="pige-content">
       {{range $key,$value := .Lines}}
@@ -26,9 +25,9 @@
           {{range $index,$elem := $value}}
           <li class="pige-label">
           <span class="iconfont icon-riqi"
-          >&nbsp;{{dateDay $elem.CreateAt}}</span
+          >&nbsp;{{dateDay $elem.CreatedAt}}</span
           >
-            <a href="/p/{{$elem.id}}.html">{{$elem.Title}}</a>
+            <a href="/article/{{$elem.ID}}.html">{{$elem.Title}}</a>
           </li>
           {{end}}
         </ul>

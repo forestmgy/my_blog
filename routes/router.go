@@ -24,6 +24,7 @@ func InitRouter() {
 	r.GET("/login", v1.LoginView)
 	r.GET("/writing", v1.Write)
 	r.GET("/article/:id.html", v1.GetDetail)
+	r.GET("/pigeonhole", v1.GetPigeonhole)
 	auth := r.Group("api/v1")
 	auth.Use(middleware.JwtToken()) //需要鉴权的功能
 	{
